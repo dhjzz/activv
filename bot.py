@@ -5,17 +5,17 @@ from collections import defaultdict
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-# Берем токен из переменной окружения
+# Токен из переменных окружения (настрой на Bothost)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 if not BOT_TOKEN:
-    print("❌ ОШИБКА: Переменная окружения BOT_TOKEN не найдена")
-    print("📍 Добавьте BOT_TOKEN в Environment Variables на Bothost")
+    print("❌ ОШИБКА: BOT_TOKEN не найден в переменных окружения")
     exit(1)
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
+# Статистика
 daily_stats = defaultdict(int)
 current_date = datetime.now().date()
 
@@ -26,11 +26,14 @@ async def reset_stats_if_needed():
         daily_stats.clear()
         current_date = today
 
+# Считаем все сообщения
 @dp.message()
 async def track_activity(message: types.Message):
     await reset_stats_if_needed()
     daily_stats[message.from_user.id] += 1
+    print(f"Сообщение от {message.from_user.id}, всего: {daily_stats[message.from_user.id]}")
 
+# Команда /activ
 @dp.message(Command("activ"))
 async def show_activ(message: types.Message):
     await reset_stats_if_needed()
@@ -45,7 +48,10 @@ async def show_activ(message: types.Message):
     try:
         user = await bot.get_chat(most_active_id)
         username = user.username
-        mention = f"@{username}" if username else f"[Пользователь](tg://user?id={most_active_id})"
+        if username:
+            mention = f"@{username}"
+        else:
+            mention = f"[Пользователь](tg://user?id={most_active_id})"
     except:
         mention = f"[Пользователь](tg://user?id={most_active_id})"
     
@@ -54,8 +60,14 @@ async def show_activ(message: types.Message):
         parse_mode="Markdown"
     )
 
+# Команда /start (для проверки)
+@dp.message(Command("start"))
+async def start_cmd(message: types.Message):
+    await message.reply("✅ Бот работает! Пиши /activ чтобы узнать самого активного.")
+
+# Запуск
 async def main():
-    print("✅ Бот запущен")
+    print("✅ Бот запущен и работает")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
