@@ -1,1 +1,6 @@
-aiogram>=3.0.0
+aiogram==3.28.2
+aiohttp==3.10.0
+python-dotenv==1.0.1
+requests==2.32.3
+asyncio==3.4.3
+datetime==5.5
