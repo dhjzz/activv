@@ -1,22 +1,16 @@
+import os
 import asyncio
 from datetime import datetime
 from collections import defaultdict
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-# ==========================================
-# 🔑 ВСТАВЬ СЮДА СВОЙ ТОКЕН ОТ @BotFather
-# ==========================================
-BOT_TOKEN = "8980489445:AAHO2zKLM5SRT9na4d2qp7TJ6cu1ApLE8ls"
+# Берем токен из переменной окружения
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# ==========================================
-# ВСЁ, ОСТАЛЬНОЕ НЕ ТРОГАЙ
-# ==========================================
-
-# Проверка токена
 if not BOT_TOKEN:
-    print("❌ ОШИБКА: Вставьте токен в переменную BOT_TOKEN")
-    print("📍 Получите токен у @BotFather в Telegram")
+    print("❌ ОШИБКА: Переменная окружения BOT_TOKEN не найдена")
+    print("📍 Добавьте BOT_TOKEN в Environment Variables на Bothost")
     exit(1)
 
 bot = Bot(token=BOT_TOKEN)
